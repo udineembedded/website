@@ -1,0 +1,713 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>PCB Design Best Practices</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="227d6b81-fb4e-8057-b326-dd4e1a5b92c4" class="page sans"><header><h1 class="page-title" dir="auto">PCB Design Best Practices</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="2bdd6b81-fb4e-8067-a2cb-f3266f3ff3b4" class="">Introduction</h1></div><div style="display:contents" dir="auto"><p id="2bdd6b81-fb4e-80e3-a4e5-e1add99f6df6" class=""><br/>This is a collection of PCB layout best practices that I’ve put together to help during the design process and help improve existing projects. If you notice anything incorrect or missing, feel free to reach out or open an issue on the repository.</p></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-8096-b24e-faf8021865c7" class="">Read The Docs</h1></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80d1-ad0f-fda5fe2937f4" class="">The datasheets from the components you are going to use contain a lot of valuable information that will help guide your design.</p></div><div style="display:contents" dir="auto"><h1 id="228d6b81-fb4e-809e-a228-ff7376916857" class="">Check Manufacturer Capabilities</h1></div><div style="display:contents" dir="auto"><p id="228d6b81-fb4e-8062-afbf-eda690906fb5" class="">Identify the parameters that could make the PCB production more expensive.</p></div><div style="display:contents" dir="auto"><p id="266d6b81-fb4e-80d2-b2dc-ce70a26953d6" class=""><a href="https://www.pcbway.com/capabilities.html">https://www.pcbway.com/capabilities.html</a></p></div><div style="display:contents" dir="auto"><p id="266d6b81-fb4e-80de-b5c8-e8b751e77f11" class=""><a href="https://jlcpcb.com/capabilities/pcb-capabilities">https://jlcpcb.com/capabilities/pcb-capabilities</a></p></div><div style="display:contents" dir="auto"><p id="228d6b81-fb4e-809c-a214-c8c53f2cd55d" class="">Examples:</p></div><div style="display:contents" dir="auto"><ul id="228d6b81-fb4e-800d-9484-e290565bcc07" class="bulleted-list"><li style="list-style-type:disc">Holes smaller than 0.3mm</li></ul></div><div style="display:contents" dir="auto"><ul id="228d6b81-fb4e-80ee-a8e0-e04d98668f72" class="bulleted-list"><li style="list-style-type:disc">Traces smaller than 0.15mm</li></ul></div><div style="display:contents" dir="auto"><ul id="228d6b81-fb4e-80f9-bde8-c3d8bf2ec3eb" class="bulleted-list"><li style="list-style-type:disc">Spacing smaller than 0.15mm</li></ul></div></div><div style="display:contents" dir="auto"><p id="228d6b81-fb4e-8062-afbf-eda690906fb5" class="">You should set your design rules based on your chosen manufacturer capabilities, to avoid having to make big changes on the latter stages of the project.</p></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-8003-8052-d2503ccd4fb4" class="">Component Selection</h1></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-8008-8ad9-d0cfb68f00af" class="">Mouting Screws</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80c2-8536-cd07cda85a48" class="">Avoid using multiple types of screws, to prevent issues caused by excessive or improper tightening torque.</p></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-80fa-864a-e115d13c6ff3" class="">Connector Pick and Place Cap</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8098-ae21-f9bfd582c6f7" class="">It is important to confirm the existence of this cap and that it is supplied with the connector. This helps avoid changes to the BOM forecast and ensures that the component is compatible with standard pick-and-place machines.”</p></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-806a-86ce-c538b035e922" class="image"><a href="Sem_ttulo.jpg"><img style="width:191.97442626953125px" src="Sem_ttulo.jpg"/></a></figure></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80e9-800e-cc4942bb60b1" class="">These caps provide a flat, uniform surface for the machine&#x27;s vacuum nozzle to securely grip and place the connector during assembly.</p></div><div style="display:contents" dir="auto"><h1 id="26ad6b81-fb4e-8044-9bfb-fb77b404b63b" class="">PCB Gerber Layers</h1></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80af-b63e-f818c45d2016" class="">Top Overlay - Silk </p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80eb-ba13-d9df087baa9c" class="">Top Layer - Top copper</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-807f-bc84-d17adca506c6" class="">Bottom Layer - Bottom copper</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-801b-86a2-d351ca93356c" class="">Bottom Overlay - Silk </p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8042-8392-cc5671d78653" class="">Mechanical 1 - Component 3D Models</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-807e-a715-d1738102370f" class="">Mechanical 2 - Board Outline</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80a8-b4d6-c3c6a4c13ef8" class="">Mechanical 3 - Manufacturing Notes</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-806c-95c3-fdb16ba0e44a" class="">Example:</p></div><div style="display:contents" dir="ltr"><figure id="26ad6b81-fb4e-80b7-bf93-c78533de46d3" class="image"><a href="image.png"><img style="width:336px" src="image.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8074-8b2c-d1c5fc122724" class="">Mechanical 4 - Board Dimensions</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80c8-8782-f929bc5971c0" class="">Mechanical 29/30 - Assembly Layer Top/Bottom</p></div><div style="display:contents" dir="auto"><h1 id="227d6b81-fb4e-80ee-b18c-cd5c67780ca9" class="">Placement</h1></div><div style="display:contents" dir="auto"><h3 id="227d6b81-fb4e-8048-ac8f-f8e2ba2c17c5" class="">Decoupling Capacitors</h3></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80b0-a33d-d01883716375" class="">As close to IC pin as possible. In case there is multiple capacitors the ones with the lowest value should be the closest to the pin.</p></div><div style="display:contents" dir="auto"><h3 id="227d6b81-fb4e-808c-862f-df37e490eef5" class="">Crystal</h3></div><div style="display:contents" dir="auto"><p id="227d6b81-fb4e-801f-af2c-da612d5691b6" class="">As close to the microcontroller pin as possible.</p></div><div style="display:contents" dir="auto"><h3 id="227d6b81-fb4e-80d0-9c0c-f9055eca7eb4" class="">ESD protection</h3></div><div style="display:contents" dir="auto"><p id="227d6b81-fb4e-8029-86d6-e3020e44150d" class="">As close to the connector/component as possible.</p></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-807d-9018-fbfa07c8c1ae" class="">Mounting Holes</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80ae-a997-d3c7311722df" class="">Due to stress that maybe caused during the mounting process keep traces and components as far away as possible from the mounting holes.</p></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-808d-8d6c-e623bd08c1c7" class="">Height and Weight</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8092-b0d8-e267c6ea7d8e" class="">Components or modules heavier than 7g and or bigger than 450m2 must be keept on the top layer to avoid the need of glue or possible process failures.</p></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-8076-b196-c8c4bccc3f8d" class="">Stencil</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-806f-ac5f-d4469e0fe58a" class="">Avoid placing components with very different pad sizes close to each other due to the variability in the recommended stencil thickness. This can cause stress during manufacturing and also reduce the stencil’s lifespan.</p></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-8059-af5d-f7b636232da4" class="">Vias</h3></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8055-ba69-edfdac7bea77" class="">Placing pads near unfilled vias can cause a defect known as solder wicking, where the solder that should remain on the pad flows down the via. This may result in poor solder joints on the component and the formation of a solder bump on the opposite side of the board, which can damage the stencil.</p></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-806d-b6db-d088c6590d8e" class="image"><a href="131118.jpg"><img style="width:480px" src="131118.jpg"/></a><figcaption>Source: Euro circuits</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-80e1-9dc5-d872028b1367" class="image"><a href="images.jpg"><img style="width:210px" src="images.jpg"/></a><figcaption>Source: ALBA PCB Group</figcaption></figure></div><div style="display:contents" dir="auto"><h1 id="227d6b81-fb4e-800a-8414-ee7d103bc46a" class="">Routing</h1></div><div style="display:contents" dir="auto"><h3 id="227d6b81-fb4e-80b0-bde6-ca3001a4c0c0" class="">Clock Signal</h3></div><div style="display:contents" dir="auto"><p id="227d6b81-fb4e-806f-ac71-d00f7219c64d" class="">The clock signal is considered a agressor and is recomended to trace it keeping a 3W distance from other traces with W being the width of the clock trace.</p></div><div style="display:contents" dir="auto"><h3 id="266d6b81-fb4e-804b-af43-d72122ba49db" class="">Power/VCC</h3></div><div style="display:contents" dir="auto"><p id="266d6b81-fb4e-8091-bdaa-c840b4a02dd6" class="">Make sure the track and vias supports the amount of current required by the component being routed.</p></div><div style="display:contents" dir="ltr"><figure id="266d6b81-fb4e-8078-9727-d9c66b99f042" class="image"><a href="5dd9099d-ba0a-4f78-874e-c706da2ab9b5.png"><img style="width:569.9833374023438px" src="5dd9099d-ba0a-4f78-874e-c706da2ab9b5.png"/></a></figure></div><div style="display:contents" dir="auto"><h3 id="26ad6b81-fb4e-80fd-8cbf-d1963a386440" class="">High Speed Signals</h3></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8065-9f30-c997f8383785" class="">When changing layers there should be a GND via next to the Signal via so that the return current has a path to flow to.</p></div><div style="display:contents" dir="auto"><h3 id="26ad6b81-fb4e-809a-ba32-fcb8093c0d45" class="">Copper Between Component Pads</h3></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8085-8ddb-c5cff4c9db89" class="">Do not route traces directly between adjacent component pads on outer PCB layers.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80db-a84b-d372cc6876fa" class="">Do not place copper pours/planes between adjacent component pads on outer PCB layers.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-808c-a6a7-eb4c54740536" class="">This can look like a solder bridge during a PCB inspection and when trying to repair the PCB may be damaged.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80c0-8d7c-ed79cb652486" class="">This suggestion may be overriden to comply with electrial current capacity, thermal dissipation and RF requirements.</p></div><div style="display:contents" dir="ltr"><figure id="2bfd6b81-fb4e-8067-ba7a-f7b159625c23" class="image"><a href="image%201.png"><img style="width:692px" src="image%201.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="26ad6b81-fb4e-809f-9d0e-d1ef788c31de" class="">Thermal Reliefs</h1></div><div style="display:contents" dir="auto"><h3 id="26ad6b81-fb4e-808f-8dfa-fff1cd74ec1e" class="">Thermal Reliefs for SMD</h3></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80c9-bf03-d5a06dd46e2c" class="">Thermal relief is a technique used in PCB manufacturing to prevent tombstoning defects.</p></div><div style="display:contents" dir="ltr"><figure id="26ad6b81-fb4e-80e7-952e-e92cfc22a6c3" class="image"><a href="Sem_ttulo.png"><img style="width:432px" src="Sem_ttulo.png"/></a><figcaption>Source: PCBWay</figcaption></figure></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8091-877a-ffacea0909dc" class="">For 0805 and smaller discrete components ensure the cumulative width of traces attached to the pads does not exceed a 3 to 1 ratio between pads.</p></div><div style="display:contents" dir="ltr"><figure id="2bfd6b81-fb4e-80d5-9baa-e86564b7987d" class="image"><a href="image%202.png"><img style="width:692px" src="image%202.png"/></a></figure></div><div style="display:contents" dir="auto"><h3 id="26ad6b81-fb4e-8010-9c33-c868d8f23275" class="">Thermal Reliefs for THMT</h3></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8095-8d31-e293803c575e" class="">This suggestion is mostly for tin lead and lead-free wave and selective soldering. Not complying can cause insufficient hole fill, loss of solder fillet and rework issues.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-8045-bdd5-c2780df3c69a" class="">A maximum of two inner layer planes cam be connected to a single PTH barrel</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80d8-9848-efbbc303d757" class="">Provide a maximum of four thermal relief spokes per barrel per layer.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-804f-a16e-f2981f30a888" class="">The maximum relief spoke width 0.25mm (A)</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80fd-949f-e142018f8d4a" class="">The minimum relief spoke length 0.25mm (B)</p></div><div style="display:contents" dir="ltr"><figure id="2bfd6b81-fb4e-80d2-9789-e364da28486b" class="image"><a href="image%203.png"><img style="width:384px" src="image%203.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-8096-a853-fed5386e562c" class="">Through Hole Components (PTH)</h1></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-8069-9c9a-fc74e76db48a" class="bulleted-list"><li style="list-style-type:disc">Oblong holes should be used to accommodate components with high tolerance in lead spacing.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-80c3-b0e1-df01589f2a69" class="bulleted-list"><li style="list-style-type:disc">To maintain a uniform mounting height for PTH components and prevent solder meniscus issues, the Kink (Standoff Bend) technique is recommended.</li></ul></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-80ea-934b-f816e496138c" class="image"><a href="5532204_aabed636-dffa-4cc9-a89b-748897859efb_1062_1062.jpg"><img style="width:184px" src="5532204_aabed636-dffa-4cc9-a89b-748897859efb_1062_1062.jpg"/></a></figure></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-8002-9789-c5dd545a1684" class="bulleted-list"><li style="list-style-type:disc">Avoid excessively large holes, as they may cause soldering defects and solder balls.</li></ul></div><div style="display:contents" dir="auto"><h1 id="26ad6b81-fb4e-802e-a26d-dd13958b3661" class="">Fiducial Marker</h1></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-809b-ba99-f306c9335bdc" class="">PCB panel fiducial point assists in the calibration of the pick-and-place machine and other tooling.</p></div><div style="display:contents" dir="auto"><p id="26ad6b81-fb4e-80da-a05e-dcbad8779a5f" class="">The ideal positioning is at the farthest points along the largest diagonal of the panel.</p></div><div style="display:contents" dir="ltr"><figure id="26ad6b81-fb4e-8081-8999-df314a0851d0" class="image"><a href="image%204.png"><img style="width:573px" src="image%204.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-80f6-a6db-dea532719c1f" class="">Solder Mask Defined x Non Solder Mask Defined</h1></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-8056-9c94-fd5bd3b8f67a" class="image"><a href="image%205.png"><img style="width:649px" src="image%205.png"/></a><figcaption>Source: GlobalWellPCBA</figcaption></figure></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8096-8455-ee5b1699a293" class="">In a Non-Solder Mask Defined (NSMD) Pad the solder mask opening is larger than the copper pad and the copper pad itself defines the solderable area. The advantages are a better solder joint reliability (solder can wrap around pad edges) and more forgiving to mask alignment tolerances. One of its disadvantages is that its slightly weaker mechanically (pad can lift more easily if stressed).</p></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-804c-b589-da557a14ea64" class="">In the case of a Solder Mask Defined (SMD) Pad the solder mask opening is smaller than the copper pad and overlaps the pad edges, defining its size. </p></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80ab-a3c1-cb5da1c312c7" class="">Advantages:</p></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-801f-ac3d-c03de509a083" class="bulleted-list"><li style="list-style-type:disc">Stronger mechanical support against pad lifting.</li></ul></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-800c-a2d2-d89a7974d3ee" class="">Disadvantages:</p></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-8047-8aba-c349374dfb78" class="bulleted-list"><li style="list-style-type:disc">Reduced solderable surface → can lead to weaker solder joints.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-80dd-8cc9-dd9baa4a0042" class="bulleted-list"><li style="list-style-type:disc">The solder mask can interfere with the components height which can cause misalignment and other problems in the smd process.</li></ul></div><div style="display:contents" dir="auto"><h1 id="262d6b81-fb4e-80d1-a94f-d3a5a1f9a3e4" class="">RF Design</h1></div><div style="display:contents" dir="ltr"><figure id="262d6b81-fb4e-80b7-a0fb-e2413e4abeff" class="image"><a href="image%2015.png"><img style="width:691.9833374023438px" src="image%2015.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="2bfd6b81-fb4e-807f-8b3a-c377ed8a1722" class="">To ensure RF performance and reliability, follow the RF layout design principles below:</p></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-8077-9bc9-e157a7eccd86" class="bulleted-list"><li style="list-style-type:disc">Use an impedance simulation tool to accurately control the characteristic impedance of RF traces to 50 Ω.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-8071-a8ed-fd4ab77d9529" class="bulleted-list"><li style="list-style-type:disc">Ground pads adjacent to RF pins should not use thermal reliefs, they must be fully connected to the ground plane.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-8071-b9ee-ca946f9c4f34" class="bulleted-list"><li style="list-style-type:disc">Keep the distance between RF pins and the RF connector as short as possible, and avoid right-angle trace corners. Use curved traces instead, a 135° trace angle is recommended.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-803f-8c8e-c38a51b2b2e1" class="bulleted-list"><li style="list-style-type:disc">Ensure there is clearance beneath the signal pin of the antenna connector or solder joint.</li></ul></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-80e6-bab9-f6300e3b6360" class="bulleted-list"><li style="list-style-type:disc">The reference ground for RF traces should be continuous. Adding ground vias around RF traces and along the ground reference can improve RF performance. The distance between ground vias and RF traces should be at least twice the RF trace width (2 × W).</li></ul></div><div style="display:contents" dir="auto"><ul id="2bfd6b81-fb4e-8084-98b0-ed62cdcf8bc9" class="bulleted-list"><li style="list-style-type:disc">Keep RF traces away from interference sources such as DC-DC converters, high-frequency digital lines, display interfaces, and clock signals. Avoid intersections or parallel routing with other traces on adjacent layers.</li></ul></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-802b-af3c-c59b60b74e4a" class="">Identification</h1></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8043-943d-e0e3dff74ec9" class="">If possible leave space for a serial number or barcode to enable a way to identify each individual PCB.</p></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-8028-8c58-f1c64a154d3f" class="">Possible identification methods:</p></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-802e-9e1a-ea73442f2b8e" class="bulleted-list"><li style="list-style-type:disc">Laser Engraving</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-806f-a4b0-fb49654c4343" class="bulleted-list"><li style="list-style-type:disc">Adheseve tag</li></ul></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-80db-9fea-c58367158096" class="">Design For Testability (DFT)</h1></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-80ea-a453-caa236216bb4" class="">Bed of Nails</h3></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-80d8-a406-f686309cd89f" class="image"><a href="main.webp"><img style="width:432px" src="main.webp"/></a><figcaption>Source:</figcaption></figure></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-80da-a34c-e01443c22c74" class="bulleted-list"><li style="list-style-type:disc">Provide test points for each net, or for as many nets as possible.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-8034-8373-c7f69f361781" class="bulleted-list"><li style="list-style-type:disc">Provide at least 3 tooling holes normally with 3.175mm.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-80e0-9b45-d09d220ea4e0" class="bulleted-list"><li style="list-style-type:disc">Avoid placing testpoints close to the boards edge.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-8054-a514-c4fc371eb893" class="bulleted-list"><li style="list-style-type:disc">The recommended spacing between test point centers is 100 mils, with a minimum spacing of 50 mils due to bed-of-nails fixture limitations.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-803d-bf95-e936020f462b" class="bulleted-list"><li style="list-style-type:disc">The preferred layer for placing test points is one without PTH components, or with the lowest possible number of them.</li></ul></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-802d-81e1-f06cf8d2dcb7" class="bulleted-list"><li style="list-style-type:disc">It is recommended that test points be placed at least 3 mm away from PTH solder joints.</li></ul></div><div style="display:contents" dir="auto"><h3 id="27fd6b81-fb4e-8094-9605-d315d80065c6" class="">Flying Probe</h3></div><div style="display:contents" dir="ltr"><figure id="27fd6b81-fb4e-80ad-8944-ec1f4a202cda" class="image"><a href="flyingprobe.png"><img style="width:432px" src="flyingprobe.png"/></a><figcaption>Source: Wevolver</figcaption></figure></div><div style="display:contents" dir="auto"><ul id="27fd6b81-fb4e-80e4-ae71-d2cfc4aaeea8" class="bulleted-list"><li style="list-style-type:disc">Use pads that will leave a bit of exposed copper beyond component and solder if possible</li></ul></div><div style="display:contents" dir="auto"><h1 id="26ad6b81-fb4e-8086-96e2-e419a38479cf" class="">File Release Proceadure</h1></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-8011-924b-e884fc2e5e81" class="numbered-list" start="1"><li>Confirm project compiles with no errors</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-80af-937d-eb257298f8cd" class="numbered-list" start="2"><li>Check if there are differences between Schematic and Layout</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-80a9-b8f2-d23128d99ed9" class="numbered-list" start="3"><li>Impedance : Check if trace width and gap matches the required impedance</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-80fc-a807-c9678feb9dd0" class="numbered-list" start="4"><li>Repour all polygons</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-80b9-b2f0-f296d0ba51cd" class="numbered-list" start="5"><li>Run Design Rule Check</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="26ad6b81-fb4e-80d1-9fe8-d0f4616ded3b" class="numbered-list" start="6"><li>Confirm Gerber scale and units of measurements</li></ol></div><div style="display:contents" dir="auto"><h1 id="27fd6b81-fb4e-8074-84c6-f9d230264d95" class="">Useful Resources</h1></div><div style="display:contents" dir="auto"><p id="27fd6b81-fb4e-80ed-9b6c-e9eacbe0e65d" class=""><a href="https://www.protoexpress.com/kb/dfm-and-dfa-mistakes-that-delay-pcb-production/">https://www.protoexpress.com/kb/dfm-and-dfa-mistakes-that-delay-pcb-production/</a></p></div><div style="display:contents" dir="auto"><p id="2bfd6b81-fb4e-80b6-889a-e5b42a854cd0" class=""><a href="https://www.youtube.com/watch?v=ySuUZEjARPY">https://www.youtube.com/watch?v=ySuUZEjARPY</a></p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
