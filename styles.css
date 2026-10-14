@@ -1301,3 +1301,33 @@ h1 span {
     border-color: var(--navy);
     transform: translateY(-2px);
 }
+
+/* Projects: disable carousel on mobile, stack cards vertically */
+@media (max-width: 650px) {
+    .projects-carousel {
+        display: block;
+        width: calc(100% - 38px);
+        margin: 0 auto;
+    }
+
+    .carousel-button {
+        display: none;
+    }
+
+    .project-viewport {
+        overflow: visible;
+    }
+
+    .project-grid {
+        flex-direction: column;
+        gap: 17px;
+        transform: none !important;
+        transition: none;
+        will-change: auto;
+    }
+
+    .project-card {
+        flex: none;
+        width: 100%;
+    }
+}

@@ -29,319 +29,146 @@
 
   if (carousel && viewport && track) {
 
-    /*
-     * Get the original project cards.
-     *
-     * Example:
-     *
-     * [Project 1] [Project 2] [Project 3] [Project 4]
-     */
-    const originalCards = Array.from(track.children);
-
-    const cardCount = originalCards.length;
-
-    /*
-     * We need at least 2 cards for the carousel to make sense.
-     */
-    if (cardCount > 1) {
-
-      /*
-       * Create copies of all cards.
-       *
-       * Original:
-       * [1] [2] [3] [4]
-       *
-       * After cloning:
-       * [1] [2] [3] [4] [1] [2] [3] [4] [1] [2] [3] [4]
-       */
-      const prependCards = originalCards.map(card =>
-        card.cloneNode(true)
-      );
-
-      const appendCards = originalCards.map(card =>
-        card.cloneNode(true)
-      );
-
-
-      /*
-       * Add the cloned cards around the originals.
-       */
-      track.prepend(...prependCards);
-      track.append(...appendCards);
-
-
-      /*
-       * Current position.
-       *
-       * We start at the first ORIGINAL card.
-       *
-       * Because we added one complete copy before the originals,
-       * the original cards start at index = cardCount.
-       *
-       * Example with 4 projects:
-       *
-       * [1][2][3][4] [1][2][3][4] [1][2][3][4]
-       *               ↑
-       *             index 4
-       */
-      let index = cardCount;
-
-
-      /*
-       * Prevent multiple animations from being triggered
-       * before the current animation has finished.
-       */
-      let isAnimating = false;
-
-
-      /*
-       * Calculate the width of one card + its gap.
-       *
-       * This is better than hardcoding a value because it
-       * continues to work if you change the CSS.
-       */
-      const getStep = () => {
-
-        const card = track.children[0];
-
-        if (!card) {
-          return 0;
-        }
-
-        const cardWidth = card.getBoundingClientRect().width;
-
-        const styles = window.getComputedStyle(track);
-
-        const gap = parseFloat(styles.columnGap || styles.gap) || 0;
-
-        return cardWidth + gap;
-      };
-
-
-      /*
-       * Move the carousel to the current index.
-       */
-      const render = (animate = true) => {
-
-        const step = getStep();
-
-        track.style.transition = animate
-          ? 'transform .45s cubic-bezier(.22,.61,.36,1)'
-          : 'none';
-
-        track.style.transform =
-          `translate3d(${-index * step}px, 0, 0)`;
-      };
-
-
-      /*
-       * Move one card left/right.
-       */
-      const move = (direction) => {
-
-        if (isAnimating) {
-          return;
-        }
-
-        isAnimating = true;
-
-        index += direction;
-
-        render(true);
-      };
-
-
-      /*
-       * Position the carousel at the original cards.
-       *
-       * We need to wait until the browser has calculated
-       * the card dimensions.
-       */
-      requestAnimationFrame(() => {
-        render(false);
-      });
-
-
-      /* =====================================================
-         INFINITE LOOP
-         ===================================================== */
-
-      track.addEventListener('transitionend', (event) => {
-
-        if (event.propertyName !== 'transform') {
-          return;
-        }
-
-
-        /*
-         * We moved too far to the RIGHT.
-         *
-         * Example:
-         *
-         * [1][2][3][4] [1][2][3][4] [1][2][3][4]
-         *                         ↑
-         *
-         * Move the index back by one complete set.
-         */
-        if (index >= cardCount * 2) {
-
-          index -= cardCount;
-
-          render(false);
-        }
-
-
-        /*
-         * We moved too far to the LEFT.
-         */
-        if (index < cardCount) {
-
-          index += cardCount;
-
-          render(false);
-        }
-
-
-        /*
-         * Allow the next movement.
-         */
-        requestAnimationFrame(() => {
-          isAnimating = false;
-        });
-
-      });
-
-
-      /* =====================================================
-         NAVIGATION BUTTONS
-         ===================================================== */
-
-      if (nextButton) {
-
-        nextButton.addEventListener('click', () => {
-          move(1);
-        });
-
-      }
-
-
-      if (prevButton) {
-
-        prevButton.addEventListener('click', () => {
-          move(-1);
-        });
-
-      }
-
-
-      /* =====================================================
-         TOUCH / SWIPE
-         ===================================================== */
-
-      let startX = 0;
-      let startY = 0;
-
-
-      viewport.addEventListener('touchstart', (event) => {
-
-        startX = event.changedTouches[0].clientX;
-        startY = event.changedTouches[0].clientY;
-
-      }, {
-        passive: true
-      });
-
-
-      viewport.addEventListener('touchend', (event) => {
-
-        const endX = event.changedTouches[0].clientX;
-        const endY = event.changedTouches[0].clientY;
-
-        const dx = endX - startX;
-        const dy = endY - startY;
-
-
-        /*
-         * Only treat the gesture as a horizontal swipe
-         * if horizontal movement is dominant.
-         */
-        if (
-          Math.abs(dx) > 50 &&
-          Math.abs(dx) > Math.abs(dy)
-        ) {
-
-          if (dx < 0) {
-            move(1);
-          } else {
-            move(-1);
-          }
-
-        }
-
-      }, {
-        passive: true
-      });
-
-
-      /* =====================================================
-         KEYBOARD NAVIGATION
-         ===================================================== */
-
-      document.addEventListener('keydown', (event) => {
-
-        /*
-         * Only react to the arrows when the carousel is
-         * reasonably visible on screen.
-         */
-        const rect = carousel.getBoundingClientRect();
-
-        const visible =
-          rect.top < window.innerHeight &&
-          rect.bottom > 0;
-
-
-        if (!visible) {
-          return;
-        }
-
-
-        if (event.key === 'ArrowRight') {
-          move(1);
-        }
-
-
-        if (event.key === 'ArrowLeft') {
-          move(-1);
-        }
-
-      });
-
-
-      /* =====================================================
-         RESPONSIVE RESIZE
-         ===================================================== */
-
-      let resizeTimer;
-
-      window.addEventListener('resize', () => {
-
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(() => {
-
-          /*
-           * Recalculate the position because the card width
-           * may have changed.
-           */
-          render(false);
-
-        }, 100);
-
-      });
-
+  const originalCards = Array.from(track.children);
+  const cardCount = originalCards.length;
+
+  // Must match the CSS breakpoint
+  const mobileQuery = window.matchMedia('(max-width: 650px)');
+
+  let index = cardCount;
+  let isAnimating = false;
+  let enabled = false;
+
+  const getStep = () => {
+    const card = track.children[0];
+    if (!card) return 0;
+    const cardWidth = card.getBoundingClientRect().width;
+    const styles = window.getComputedStyle(track);
+    const gap = parseFloat(styles.columnGap || styles.gap) || 0;
+    return cardWidth + gap;
+  };
+
+  const render = (animate = true) => {
+    const step = getStep();
+    track.style.transition = animate
+      ? 'transform .45s cubic-bezier(.22,.61,.36,1)'
+      : 'none';
+    track.style.transform = `translate3d(${-index * step}px, 0, 0)`;
+  };
+
+  const move = (direction) => {
+    if (!enabled || isAnimating) return;
+    isAnimating = true;
+    index += direction;
+    render(true);
+  };
+
+  const makeClones = () =>
+    originalCards.map(card => {
+      const clone = card.cloneNode(true);
+      clone.dataset.clone = 'true';
+      clone.setAttribute('aria-hidden', 'true');
+      clone.tabIndex = -1;
+      return clone;
+    });
+
+  /* Turn the carousel ON (desktop/tablet) */
+  const enableCarousel = () => {
+    if (enabled || cardCount < 2) return;
+    enabled = true;
+
+    track.prepend(...makeClones());
+    track.append(...makeClones());
+
+    index = cardCount;
+    isAnimating = false;
+
+    requestAnimationFrame(() => render(false));
+  };
+
+  /* Turn the carousel OFF (mobile): remove clones, reset transform */
+  const disableCarousel = () => {
+    if (!enabled) return;
+    enabled = false;
+
+    track.querySelectorAll('[data-clone]').forEach(clone => clone.remove());
+    track.style.transform = '';
+    track.style.transition = '';
+    isAnimating = false;
+  };
+
+  const syncCarousel = () => {
+    if (mobileQuery.matches) {
+      disableCarousel();
+    } else {
+      enableCarousel();
+    }
+  };
+
+  syncCarousel();
+  mobileQuery.addEventListener('change', syncCarousel);
+
+  /* Infinite loop */
+  track.addEventListener('transitionend', (event) => {
+    if (!enabled || event.propertyName !== 'transform') return;
+
+    if (index >= cardCount * 2) {
+      index -= cardCount;
+      render(false);
     }
 
-  }
+    if (index < cardCount) {
+      index += cardCount;
+      render(false);
+    }
+
+    requestAnimationFrame(() => { isAnimating = false; });
+  });
+
+  /* Buttons */
+  nextButton?.addEventListener('click', () => move(1));
+  prevButton?.addEventListener('click', () => move(-1));
+
+  /* Touch / swipe (ignored automatically on mobile because move() checks `enabled`) */
+  let startX = 0;
+  let startY = 0;
+
+  viewport.addEventListener('touchstart', (event) => {
+    startX = event.changedTouches[0].clientX;
+    startY = event.changedTouches[0].clientY;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (event) => {
+    const dx = event.changedTouches[0].clientX - startX;
+    const dy = event.changedTouches[0].clientY - startY;
+
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      move(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
+
+  /* Keyboard */
+  document.addEventListener('keydown', (event) => {
+    if (!enabled) return;
+
+    const rect = carousel.getBoundingClientRect();
+    const visible = rect.top < window.innerHeight && rect.bottom > 0;
+    if (!visible) return;
+
+    if (event.key === 'ArrowRight') move(1);
+    if (event.key === 'ArrowLeft') move(-1);
+  });
+
+  /* Resize */
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (enabled) render(false);
+    }, 100);
+  });
+}
+
 
 
   /* =========================================================

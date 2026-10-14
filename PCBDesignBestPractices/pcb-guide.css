@@ -1,0 +1,124 @@
+/* PCB guide: overrides the Notion export so it matches the Udine site.
+   Load AFTER the Notion <style> block and AFTER ../styles.css */
+
+body {
+  max-width: none;
+  margin: 0;
+  white-space: normal;          /* Notion sets pre-wrap on body; keep it only on the article */
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* ---------- Hero ---------- */
+.guide-hero {
+  background: var(--navy-deep);
+  color: #fff;
+  padding: 78px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.guide-hero:after {
+  content: "";
+  position: absolute; right: -120px; top: 40px;
+  width: 420px; height: 420px;
+  border: 1px solid rgba(112,223,139,.16);
+  border-radius: 50%;
+  box-shadow: 0 0 0 55px rgba(112,223,139,.025), 0 0 0 110px rgba(112,223,139,.02);
+  pointer-events: none;
+}
+.guide-hero-inner { position: relative; z-index: 1; padding: 64px 0 56px; max-width: 760px; }
+.guide-hero .back-link {
+  display: inline-block; margin-bottom: 26px;
+  font-size: 12px; color: #b7c9c8; text-decoration: none;
+}
+.guide-hero .back-link i { color: var(--green); margin-right: 8px; }
+.guide-hero .back-link:hover { color: #fff; }
+.guide-hero h1 {
+  font-size: clamp(34px, 4.6vw, 54px);
+  letter-spacing: -2px; margin: 0;
+}
+.guide-hero h1 span { color: var(--green); }
+.guide-hero .hero-lead { margin-top: 20px; }
+.guide-hero .hero-bottom-line { position: absolute; }
+
+/* ---------- Article ---------- */
+article.page {
+  width: min(760px, calc(100% - 44px));
+  margin: 0 auto;
+  padding: 64px 0 90px;
+  white-space: pre-wrap;        /* keeps Notion's line breaks */
+  font-size: 15px;
+  line-height: 1.8;
+  color: #35505a;
+}
+article.page > header { display: none; }   /* title now lives in the hero */
+
+article.page p { margin: 0 0 10px; }
+article.page a { color: var(--green-dark); text-decoration-color: rgba(21,148,71,.35); text-underline-offset: 3px; }
+article.page a:hover { text-decoration-color: var(--green-dark); }
+
+/* Section headings (Notion h1) get the site's eyebrow-bar treatment */
+article.page h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(24px, 3vw, 31px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--ink);
+  margin: 56px 0 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+article.page h1:before {
+  content: ""; position: absolute; top: -1px; left: 0;
+  width: 44px; height: 3px; background: var(--green);
+}
+article.page h3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px; font-weight: 700; letter-spacing: -.4px;
+  color: var(--navy); margin: 28px 0 6px;
+}
+article.page h2 { font-family: 'Manrope', sans-serif; color: var(--ink); }
+
+/* Lists */
+article.page ul, article.page ol { margin: 8px 0 12px; padding-left: 1.4em; }
+article.page li { padding-left: .2em; margin-bottom: 4px; }
+article.page ul > li::marker { color: var(--green-dark); }
+article.page ol > li::marker { color: var(--green-dark); font-weight: 700; }
+
+/* Images */
+article.page figure.image { margin: 28px 0; text-align: left; }
+article.page figure.image a { display: inline-block; max-width: 100%; }
+article.page figure.image img {
+  max-width: 100%; height: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 8px;
+  box-shadow: var(--shadow);
+}
+article.page figcaption { font-size: 12px; color: var(--muted); opacity: 1; }
+
+/* Code, quotes, callouts, tables */
+article.page code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  background: #edf5f1; color: var(--green-dark);
+  border-radius: 2px; padding: .15em .4em; font-size: 88%;
+}
+article.page .code { background: var(--navy); color: #dce6e5; border-radius: 4px; }
+article.page .code > code { color: inherit; background: none; }
+article.page blockquote { border-left: 3px solid var(--green); color: var(--ink); padding-left: 1.1em; }
+article.page .callout { border-radius: 4px; border: 1px solid var(--line); background: #edf5f1 !important; }
+article.page hr { border-bottom-color: var(--line); }
+
+article.page table { border-color: var(--line); display: block; overflow-x: auto; }
+article.page th, article.page td { border-color: var(--line); padding: 8px 12px; }
+article.page th, article.page .simple-table-header-color { background: #edf5f1; color: var(--navy); font-weight: 700; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 650px) {
+  .guide-hero { padding-top: 70px; }
+  .guide-hero-inner { padding: 44px 0 40px; }
+  article.page { padding: 44px 0 64px; font-size: 14px; }
+  article.page h1 { margin-top: 44px; }
+}
